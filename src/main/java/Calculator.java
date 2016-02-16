@@ -41,7 +41,6 @@ public class Calculator {
         int posicionOperador = rnd.nextInt(operadores.length);
         int resultado=calcularoperacion(primerOperador,operadores[posicionOperador],segundoOperador);
         String operacion= String.valueOf(primerOperador+operadores[posicionOperador]+segundoOperador);
-        System.out.println(primerOperador+operadores[posicionOperador]+segundoOperador+"="+resultado);
         operacionresult=new ArrayList();
         operacionresult.add(operacion);
         operacionresult.add(resultado);
@@ -59,8 +58,6 @@ public class Calculator {
     }
     private boolean comprovar_resultado(){
         String resultado=String.valueOf(operacionresult.get(1));
-        System.out.println(resultado);
-        System.out.println(introducerespuesta.getText());
         if(introducerespuesta.getText().equals(resultado)){
             return true;
         }else{
@@ -81,16 +78,12 @@ public class Calculator {
                 contadortime++;
                 if(contadortime==61){
                     contadortime=0;
-                    segundo++;
-                }if(segundo==61){
                     minuto++;
-                    segundo=0;
                 }if(minuto==61){
                     hora++;
                     minuto=0;
                 }
-                System.out.println(hora+":"+minuto+":"+segundo+":"+contadortime);
-                tiempo.setText(String.valueOf(hora+":"+minuto+":"+segundo));
+                tiempo.setText(String.valueOf(hora+":"+minuto+":"+contadortime));
             }
         };
     }
@@ -112,7 +105,7 @@ public class Calculator {
                 generarproblemas();
                 problema.setText(operacionresult.get(0).toString());
                 controltiempo();
-                timer = new javax.swing.Timer(1, controltime);
+                timer = new javax.swing.Timer(1000, controltime);
                 timer.start();
             }else{
                 if(comprovar_resultado()){
@@ -122,6 +115,8 @@ public class Calculator {
                         mensaje.setText("Correcto");
                         enviarRespuesta.setEnabled(false);
                         introducerespuesta.setEnabled(false);
+                        JOptionPane.showMessageDialog(Calculatorview,String.valueOf(" Has Tardado "+hora+":"+minuto+":"+contadortime),"Felicidades",JOptionPane.PLAIN_MESSAGE);
+                        System.exit(0);
                     }else{
                         generarproblemas();
                         problema.setText(operacionresult.get(0).toString());
