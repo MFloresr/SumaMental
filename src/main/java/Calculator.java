@@ -13,9 +13,10 @@ public class Calculator {
     private JLabel problema;
     private JLabel pregunta;
     private JPanel Calculatorview;
+    private JLabel tiempo;
     private String[] operadores={"+","-","*"};
     private ArrayList operacionresult=new ArrayList();
-    private int clicks=0;
+
 
     private void createUIComponents() {
         Calculatorview = new JPanel();
@@ -47,13 +48,9 @@ public class Calculator {
             resultado=operador1*operador2;
         return resultado;
     }
-    private void cambiar_start_comprovar(int clicks){
-        if(clicks>0){
-            enviarRespuesta.setText("Comprovar");
-        }
-    }
     private boolean comprovar_resultado(){
-        if(Integer.valueOf(introducerespuesta.getText())==(operacionresult.get(1))){
+        String resultado=String.valueOf(operacionresult.get(1));
+        if(introducerespuesta.getText().equals(resultado)){
             return true;
         }else{
             return false;
@@ -71,8 +68,7 @@ public class Calculator {
             }else{
                 mensaje.setText("Incorrecto");
             }
-            clicks=clicks+1;
-            cambiar_start_comprovar(clicks);
+            enviarRespuesta.setText("Enviar");
         }
     }
 
