@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.StringJoiner;
 
 
 public class Calculator {
@@ -12,19 +13,27 @@ public class Calculator {
     private JLabel mensaje;
     private JLabel problema;
     private JLabel pregunta;
-    private JPanel Calculatorview;
     private JLabel tiempo;
+    private JPanel Calculatorview;
     private String[] operadores={"+","-","*"};
     private ArrayList operacionresult=new ArrayList();
+    private  Timer timer;
+    private ActionListener controltime;
+    private int contadortime=0;
+    private int contador=3;
+    private int hora=0;
+    private int minuto=0;
+    private int segundo=0;
 
 
     private void createUIComponents() {
         Calculatorview = new JPanel();
     }
     public Calculator(){
+        introducerespuesta.setEnabled(false);
         enviarRespuesta.addActionListener(new EnviarRespuesta());
     }
-    
+
     private ArrayList generarproblemas() {
         Random rnd = new Random();
         int primerOperador = rnd.nextInt(12)+1;
@@ -50,25 +59,80 @@ public class Calculator {
     }
     private boolean comprovar_resultado(){
         String resultado=String.valueOf(operacionresult.get(1));
+        System.out.println(resultado);
+        System.out.println(introducerespuesta.getText());
         if(introducerespuesta.getText().equals(resultado)){
             return true;
         }else{
             return false;
         }
     }
+    private boolean comprovarboton(){
+        boolean botoninicial=enviarRespuesta.getText().contains("Start");
+        if(botoninicial){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    private void controltiempo(){
+        controltime = new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                contadortime++;
+                if(contadortime==61){
+                    contadortime=0;
+                    segundo++;
+                }if(segundo==61){
+                    minuto++;
+                    segundo=0;
+                }if(minuto==61){
+                    hora++;
+                    minuto=0;
+                }
+                System.out.println(hora+":"+minuto+":"+segundo+":"+contadortime);
+                tiempo.setText(String.valueOf(hora+":"+minuto+":"+segundo));
+            }
+        };
+    }
+    private boolean contadorresultados(){
+        if(contador==0){
+            return true;
+        }else{
+            return false;
+        }
 
+    }
     private class EnviarRespuesta implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            generarproblemas();
-            problema.setText(operacionresult.get(0).toString());
-            if (comprovar_resultado()){
-                mensaje.setText("Correcto");
+            if(comprovarboton()){
+                enviarRespuesta.setText("Enviar");
+                introducerespuesta.setEnabled(true);
+                generarproblemas();
+                problema.setText(operacionresult.get(0).toString());
+                controltiempo();
+                timer = new javax.swing.Timer(1, controltime);
+                timer.start();
             }else{
-                mensaje.setText("Incorrecto");
+                if(comprovar_resultado()){
+                    contador--;
+                    if(contadorresultados()){
+                        timer.stop();
+                        mensaje.setText("Correcto");
+                        enviarRespuesta.setEnabled(false);
+                        introducerespuesta.setEnabled(false);
+                    }else{
+                        generarproblemas();
+                        problema.setText(operacionresult.get(0).toString());
+                        mensaje.setText("Correcto");
+                        introducerespuesta.setText("");
+                    }
+                }else{
+                    mensaje.setText("Incorrecto");
+                    introducerespuesta.setText("");
+                }
             }
-            enviarRespuesta.setText("Enviar");
         }
     }
 
